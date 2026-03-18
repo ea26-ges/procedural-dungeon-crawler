@@ -1,80 +1,114 @@
 import pygame
-import sys
+import random
 
-# Initialize Pygame
-pygame.init()
-
-# Constants
+# Game Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 FPS = 60
 
-# States
+# Game States
 MENU = 'MENU'
 PLAYING = 'PLAYING'
 PAUSED = 'PAUSED'
 GAME_OVER = 'GAME_OVER'
 
-# Initialize state
-current_state = MENU
+class Player:
+    def __init__(self):
+        self.health = 100
+        self.position = pygame.Vector2(400, 300)
+        self.speed = 5
 
-# Create screen
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-pygame.display.set_caption('Procedural Dungeon Crawler')
+    def move(self, direction):
+        if direction == 'UP':
+            self.position.y -= self.speed
+        elif direction == 'DOWN':
+            self.position.y += self.speed
+        elif direction == 'LEFT':
+            self.position.x -= self.speed
+        elif direction == 'RIGHT':
+            self.position.x += self.speed
 
-# Clock
-clock = pygame.time.Clock()
+class Enemy:
+    def __init__(self):
+        self.health = 100
+        self.position = pygame.Vector2(random.randint(0, SCREEN_WIDTH), random.randint(0, SCREEN_HEIGHT))
+        self.state = 'PATROL'
 
-# Main Menu
-def show_menu():
-    screen.fill((0, 0, 0))  # Black background
-    font = pygame.font.Font(None, 74)
-    title_text = font.render('Main Menu', True, (255, 255, 255))
-    screen.blit(title_text, (SCREEN_WIDTH // 2 - title_text.get_width() // 2, SCREEN_HEIGHT // 4))
-    pygame.display.flip()
-    wait_for_menu_input()
+    def update(self):
+        if self.state == 'PATROL':
+            self.patrol()
+        elif self.state == 'CHASE':
+            self.chase()
+        elif self.state == 'FLEE':
+            self.flee()
 
-def wait_for_menu_input():
-    while current_state == MENU:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    start_game()  # Start the game
+    def patrol(self):
+        # Implement patrol logic
+        pass
 
-# Game Loop
-def start_game():
-    global current_state
-    current_state = PLAYING
-    dungeon_grid = [[0 for _ in range(10)] for _ in range(10)]  # Dummy dungeon grid
+    def chase(self):
+        # Implement chase logic
+        pass
 
-    while current_state == PLAYING:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+    def flee(self):
+        # Implement flee logic
+        pass
 
-        screen.fill((0, 0, 0))  # Clear screen
-        draw_dungeon(dungeon_grid)
-        render_hud()
-        pygame.display.flip()
+class Dungeon:
+    def generate(self):
+        # Implement procedural generation logic
+        pass
+
+class GameWindow:
+    def __init__(self):
+        self.state = MENU
+        self.score = 0
+        self.hud = HUD()
+
+    def run(self):
+        while True:
+            if self.state == MENU:
+                self.show_menu()
+            elif self.state == PLAYING:
+                self.play()
+            elif self.state == PAUSED:
+                self.pause()
+            elif self.state == GAME_OVER:
+                self.game_over()
+
+    def show_menu(self):
+        # Implement menu display logic
+        pass
+
+    def play(self):
+        # Game loop logic for playing state
+        pass
+
+    def pause(self):
+        # Pause the game logic
+        pass
+
+    def game_over(self):
+        # Logic for game over state
+        pass
+
+class HUD:
+    def __init__(self):
+        self.health_bar = [100]
+
+    def draw(self):
+        # Draw health bar and score display
+        pass
+
+def main():
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    clock = pygame.time.Clock()
+    game_window = GameWindow()
+
+    while True:
+        game_window.run()
         clock.tick(FPS)
 
-# Dungeon grid display
-def draw_dungeon(grid):
-    cell_size = SCREEN_WIDTH // len(grid[0])
-    for y, row in enumerate(grid):
-        for x, cell in enumerate(row):
-            pygame.draw.rect(screen, (255, 255, 255), (x * cell_size, y * cell_size, cell_size, cell_size), 1)
-
-# HUD rendering
-def render_hud():
-    font = pygame.font.Font(None, 36)
-    hud_text = font.render('Health: 100', True, (255, 255, 255))
-    screen.blit(hud_text, (10, 10))
-
-# Main entry point
 if __name__ == '__main__':
-    show_menu()
+    main()
